@@ -2,6 +2,12 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import listEndpoints from 'express-list-endpoints'
+import usersRouter from './services/index.js'
+import {
+  unauthorizedHandler,
+  forbidenHandler,
+  catchAllHandler,
+} from './services/errorHandlers.js'
 
 const server = express()
 const port = process.env.PORT || 3001
@@ -13,7 +19,14 @@ server.use(express.json())
 
 //***************** ROUTES ****************/
 
+server.use('/users', usersRouter)
+
 //***************** ERROR HANDLERS ****************/
+
+server.use(unauthorizedHandler)
+server.use(forbidenHandler)
+server.use(catchAllHandler)
+
 
 console.table(listEndpoints(server, port))
 mongoose.connect(process.env.MONGO_CONNECTION)
