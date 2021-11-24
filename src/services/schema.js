@@ -26,4 +26,16 @@ UserSchema.pre('save', async function (next) {
   next()
 })
 
+//I´ll use methods for not showing the password on GET
+UserSchema.methods.toJSON = function () {
+  const userDocument = this
+
+  const userObject = userDocument.toObject()
+
+  delete userObject.password
+  delete userObject.__v
+  
+  return userObject
+}
+
 export default model('User', UserSchema)
