@@ -19,19 +19,19 @@ usersRouter.get('/', async (req, res, next) => {
     next(error)
   }
 })
-usersRouter.get('/', async (req, res, next) => {
+usersRouter.get('/:userID', async (req, res, next) => {
   try {
   } catch (error) {
     next(error)
   }
 })
-usersRouter.put('/', async (req, res, next) => {
+usersRouter.put('/:userID', async (req, res, next) => {
   try {
   } catch (error) {
     next(error)
   }
 })
-usersRouter.delete('/', async (req, res, next) => {
+usersRouter.delete('/:userID', async (req, res, next) => {
   try {
   } catch (error) {
     next(error)
