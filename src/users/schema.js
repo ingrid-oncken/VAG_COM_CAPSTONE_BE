@@ -29,7 +29,6 @@ UserSchema.pre('save', async function (next) {
 //I´ll use methods for not showing the password on GET
 UserSchema.methods.toJSON = function () {
   const userDocument = this
-
   const userObject = userDocument.toObject()
 
   delete userObject.password

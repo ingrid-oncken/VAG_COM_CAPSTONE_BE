@@ -1,5 +1,5 @@
 import express from 'express'
-import UserModel from './schema.js'
+import UserSchema from './schema.js'
 import { basicAuthMiddleware } from '../auth/basic.js'
 
 const usersRouter = express.Router()

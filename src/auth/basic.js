@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors'
 import atob from 'atob' //used to decode based 64 strings
-import UserModel from '../services/schema.js'
+import UserModel from '../users/schema.js'
 
 //Here I am creating basic authentication to protect routes that use ID
 export const basicAuthMiddleware = async (req, res, next) => {
@@ -19,6 +19,7 @@ export const basicAuthMiddleware = async (req, res, next) => {
     const user = await UserModel.checkCredentials(email, password)
 
     if (user) {
+      req.user = user
       next()
     } else {
       //credentials problems --> user was null
