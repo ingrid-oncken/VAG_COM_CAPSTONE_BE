@@ -34,8 +34,19 @@ UserSchema.methods.toJSON = function () {
 
   delete userObject.password
   delete userObject.__v
-  
+
   return userObject
+}
+
+UserSchema.statics.checkCredentials = async function (email, plainPW) {
+  const user = await this.findOne({ email })
+  //console.log('XXXXX', user)
+
+  if (user) {
+    const isMatch = await bcrypt.compare(plainPW, user.password)
+    if (isMatch) return user
+    else return null
+  } else return null
 }
 
 export default model('User', UserSchema)

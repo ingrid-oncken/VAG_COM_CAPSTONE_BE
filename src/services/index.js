@@ -6,7 +6,7 @@ const usersRouter = express.Router()
 
 usersRouter.post('/register', async (req, res, next) => {
   try {
-    const newUser = new UserModel(req.body)
+    const newUser = new UserSchema(req.body)
     const { _id } = await newUser.save()
 
     res.status(201).send(`The user id is: ${_id}`)
@@ -16,9 +16,9 @@ usersRouter.post('/register', async (req, res, next) => {
 })
 usersRouter.get('/', basicAuthMiddleware, async (req, res, next) => {
   try {
-    const allUsers = await UserModel.find()
+    const users = await UserSchema.find()
 
-    res.send(allUsers)
+    res.send(users)
   } catch (error) {
     next(error)
   }
