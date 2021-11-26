@@ -2,7 +2,7 @@ import createHttpError from 'http-errors'
 import atob from 'atob' //used to decode based 64 strings
 import UserModel from '../users/schema.js'
 
-//Here I am creating basic authentication to protect routes that use ID
+//creating basic authentication to protect routes that uses ID
 export const basicAuthMiddleware = async (req, res, next) => {
   if (!req.headers.authorization) {
     next(
@@ -20,6 +20,9 @@ export const basicAuthMiddleware = async (req, res, next) => {
 
     if (user) {
       req.user = user
+      //if the user is logged in, he has acces to the protected routes
+      // so he has acces to his own profile
+      //attaching the CURRENT LOGGED USER to the request
       next()
     } else {
       //credentials problems --> user was null
