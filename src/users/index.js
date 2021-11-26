@@ -1,5 +1,6 @@
 import express from 'express'
-import UserSchema from './schema.js'
+import UserModel from './schema.js'
+import { JWTAuthenticate } from '../auth/tools.js'
 import { basicAuthMiddleware } from '../auth/basic.js'
 import { adminOnlyMiddleware } from '../auth/admin.js'
 
@@ -7,7 +8,7 @@ const usersRouter = express.Router()
 
 usersRouter.post('/register', async (req, res, next) => {
   try {
-    const newUser = new UserSchema(req.body)
+    const newUser = new UserModel(req.body)
     const { _id } = await newUser.save()
 
     res.status(201).send(`The user id is: ${_id}`)
@@ -21,7 +22,7 @@ usersRouter.get(
   adminOnlyMiddleware,
   async (req, res, next) => {
     try {
-      const users = await UserSchema.find()
+      const users = await UserModel.find()
 
       res.send(users)
     } catch (error) {
@@ -66,12 +67,30 @@ usersRouter.get(
   adminOnlyMiddleware,
   async (req, res, next) => {
     try {
-      const users = await UserSchema.findById(req.params.id)
-      res.send(users)
+      const user = await UserModel.findById(req.params.id)
+      res.send(user)
     } catch (error) {
       next(error)
     }
   }
 )
+
+usersRouter.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body
+    const user = await UserModel.checkCredentials(email, password)
+
+    if (user) {
+      const accessToken = await JWTAuthenticate(user)
+
+      //frotend will get this token and save on local storage
+      res.send({ accessToken })
+    } else {
+      next(createHttpError(401, '401: Credentials are not correct!'))
+    }
+  } catch (error) {
+    next(error)
+  }
+})
 
 export default usersRouter
