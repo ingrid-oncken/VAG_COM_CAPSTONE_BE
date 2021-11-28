@@ -14,7 +14,11 @@ usersRouter.post('/register', async (req, res, next) => {
     const newUser = new UserModel(req.body)
     const { _id } = await newUser.save()
 
-    res.status(201).send(`The user id is: ${_id}`)
+    res
+      .status(201)
+      .send(
+        `The new user ${newUser.name.toUpperCase()} ${newUser.surname.toUpperCase()} was created with ID: ${_id}`
+      )
   } catch (error) {
     next(error)
   }
@@ -28,7 +32,7 @@ usersRouter.get('/', JWTAuthMiddleware, async (req, res, next) => {
     next(error)
   }
 })
-//:me are the personal routes accessed by the user
+// /me are the personal routes accessed by the user
 //attaching the CURRENT LOGGED USER to the request
 usersRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
   try {
@@ -40,9 +44,22 @@ usersRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
 
 usersRouter.put('/me', JWTAuthMiddleware, async (req, res, next) => {
   try {
-    req.user.name = 'Jhon'
-    await req.user.save()
-    res.send()
+    // req.user.name = "John"
+    // await req.user.save()
+    //res.send()
+
+    // (await req.user.save())
+    //   ? res.send()
+    //   : next(createHttpError(404, '404: User not found'))
+
+    const userID = req.user._id
+    const updatedUser = await UserModel.findByIdAndUpdate(userID, req.body, {
+      new: true,
+    })
+
+    updatedUser
+      ? res.send(updatedUser)
+      : next(createHttpError(404, `User with id ${userID} not found!`))
   } catch (error) {
     next(error)
   }
@@ -50,8 +67,13 @@ usersRouter.put('/me', JWTAuthMiddleware, async (req, res, next) => {
 
 usersRouter.delete('/me', JWTAuthMiddleware, async (req, res, next) => {
   try {
-    await req.user.deleteOne()
-    res.send()
+    const deletedUser = await req.user.deleteOne()
+
+    if (deletedUser) {
+      res.status(204).send()
+    } else {
+      next(createError(404, `The user was not found!`))
+    }
   } catch (error) {
     next(error)
   }
