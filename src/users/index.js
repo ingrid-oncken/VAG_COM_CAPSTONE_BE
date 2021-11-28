@@ -1,5 +1,7 @@
 import express from 'express'
 import UserModel from './schema.js'
+import createHttpError from 'http-errors'
+
 import { JWTAuthenticate } from '../auth/tools.js'
 import { basicAuthMiddleware } from '../auth/basic.js'
 import { adminOnlyMiddleware } from '../auth/admin.js'
