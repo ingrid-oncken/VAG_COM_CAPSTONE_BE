@@ -3,6 +3,7 @@ import UserModel from './schema.js'
 import createHttpError from 'http-errors'
 
 import { JWTAuthenticate } from '../auth/tools.js'
+import { JWTAuthMiddleware } from '../auth/token.js'
 import { basicAuthMiddleware } from '../auth/basic.js'
 import { adminOnlyMiddleware } from '../auth/admin.js'
 
@@ -18,20 +19,15 @@ usersRouter.post('/register', async (req, res, next) => {
     next(error)
   }
 })
-usersRouter.get(
-  '/',
-  basicAuthMiddleware,
-  adminOnlyMiddleware,
-  async (req, res, next) => {
-    try {
-      const users = await UserModel.find()
+usersRouter.get('/', JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const users = await UserModel.find()
 
-      res.send(users)
-    } catch (error) {
-      next(error)
-    }
+    res.send(users)
+  } catch (error) {
+    next(error)
   }
-)
+})
 //:me are the personal routes accessed by the user
 //attaching the CURRENT LOGGED USER to the request
 usersRouter.get('/me', basicAuthMiddleware, async (req, res, next) => {
