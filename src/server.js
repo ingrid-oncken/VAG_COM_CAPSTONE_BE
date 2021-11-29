@@ -2,7 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import listEndpoints from 'express-list-endpoints'
-import usersRouter from './users/index.js'
+import usersRouter from './services/users/index.js'
 import {
   unauthorizedHandler,
   forbidenHandler,

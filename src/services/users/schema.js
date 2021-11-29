@@ -10,6 +10,16 @@ const UserSchema = new Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     role: { type: String, default: 'User', enum: ['User', 'Admin'] },
+    purchaseHistory: [
+      {
+        productID: String,
+        productName: String,
+        image: String,
+        language: String,
+        price: Number,
+        purchaseDate: Date,
+      },
+    ],
   },
   { timestamps: true }
 )

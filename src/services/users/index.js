@@ -2,10 +2,10 @@ import express from 'express'
 import UserModel from './schema.js'
 import createHttpError from 'http-errors'
 
-import { JWTAuthenticate } from '../auth/tools.js'
-import { JWTAuthMiddleware } from '../auth/token.js'
+import { JWTAuthenticate } from '../../auth/tools.js'
+import { JWTAuthMiddleware } from '../../auth/token.js'
 // import { basicAuthMiddleware } from '../auth/basic.js'
-import { adminOnlyMiddleware } from '../auth/admin.js'
+import { adminOnlyMiddleware } from '../../auth/admin.js'
 
 const usersRouter = express.Router()
 
@@ -44,14 +44,6 @@ usersRouter.get('/me', JWTAuthMiddleware, async (req, res, next) => {
 
 usersRouter.put('/me', JWTAuthMiddleware, async (req, res, next) => {
   try {
-    // req.user.name = "John"
-    // await req.user.save()
-    //res.send()
-
-    // (await req.user.save())
-    //   ? res.send()
-    //   : next(createHttpError(404, '404: User not found'))
-
     const userID = req.user._id
     const updatedUser = await UserModel.findByIdAndUpdate(userID, req.body, {
       new: true,
@@ -78,6 +70,46 @@ usersRouter.delete('/me', JWTAuthMiddleware, async (req, res, next) => {
     next(error)
   }
 })
+usersRouter.post('/me/purchaseHistory'),
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+    } catch (error) {
+      next(error)
+    }
+  }
+usersRouter.get('/me/purchaseHistory'),
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+    } catch (error) {
+      next(error)
+    }
+  }
+usersRouter.get('/me/purchaseHistory/:productID'),
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+    } catch (error) {
+      next(error)
+    }
+  }
+usersRouter.put('/me/purchaseHistory/:productID'),
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+    } catch (error) {
+      next(error)
+    }
+  }
+usersRouter.delete('/me/purchaseHistory/:productID'),
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    try {
+    } catch (error) {
+      next(error)
+    }
+  }
 
 //the order os the Middleware are important, 1as check if the user has credentials = basicAuthMiddleware
 //then check if it is an Admin = adminOnlyMiddleware
