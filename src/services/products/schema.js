@@ -38,3 +38,5 @@ ProductSchema.methods.toJSON = function () {
   delete productObject.__v
   delete productObject.stock
 }
+
+export default model('Product', ProductSchema)

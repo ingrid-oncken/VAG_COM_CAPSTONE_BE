@@ -74,6 +74,41 @@ usersRouter.post('/me/purchaseHistory'),
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {
+      //retriving the product id from req.user
+      const purchasedProduct = await User.findById(req.user.productId)
+
+      if (purchasedProduct) {
+        const productToInsert = {
+          ...purchasedProduct.toObject(),
+          purchaseDate: new Date(),
+        }
+
+        //update take 3 parameters WHO, HOW and OPTIONS
+        //updating the user adding the product to its array
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          req.user.userId,
+          { $push: { purchaseHistory: productToInsert } },
+          { new: true }
+        )
+          res.send(updatedUser)
+          
+        // updatedUser
+        //   ? res.send(updatedUser)
+        //   : //Does it make sense? if the user is already logged?
+        //     next(
+        //       createError(
+        //         404,
+        //         `***This is actually an error that I don't know if it will ever happen *** The user with id ${req.user.userId} was not found`
+        //       )
+        //     )
+      } else {
+        next(
+          createError(
+            404,
+            `The product with id ${req.user.productId} was not found`
+          )
+        )
+      }
     } catch (error) {
       next(error)
     }
@@ -86,7 +121,7 @@ usersRouter.get('/me/purchaseHistory'),
       next(error)
     }
   }
-usersRouter.get('/me/purchaseHistory/:productID'),
+usersRouter.get('/me/purchaseHistory/:productId'),
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {
@@ -94,7 +129,7 @@ usersRouter.get('/me/purchaseHistory/:productID'),
       next(error)
     }
   }
-usersRouter.put('/me/purchaseHistory/:productID'),
+usersRouter.put('/me/purchaseHistory/:productId'),
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {
@@ -102,7 +137,7 @@ usersRouter.put('/me/purchaseHistory/:productID'),
       next(error)
     }
   }
-usersRouter.delete('/me/purchaseHistory/:productID'),
+usersRouter.delete('/me/purchaseHistory/:productId'),
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {

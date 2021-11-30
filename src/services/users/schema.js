@@ -12,7 +12,7 @@ const UserSchema = new Schema(
     role: { type: String, default: 'User', enum: ['User', 'Admin'] },
     purchaseHistory: [
       {
-        productID: String,
+        productId: String,
         productName: String,
         image: String,
         language: String,
