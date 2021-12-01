@@ -15,15 +15,15 @@ const ProductSchema = new Schema(
     },
     price: { type: Number, required: true },
     comments: [
-      {
-        commentAuthor: {
-          type: Schema.Types.ObjectId,
-          ref: 'users',
-          required: true,
-        },
-        comment: { type: String, required: false },
-        rate: { type: Number, required: false },
-      },
+      // {
+      //   commentAuthor: {
+      //     type: Schema.Types.ObjectId,
+      //     ref: 'Users',
+      //     required: true,
+      //   },
+      //   comment: { type: String, required: false },
+      //   rate: { type: Number, required: false },
+      // },
     ],
     stock: { type: Number, required: false },
     available: { type: Boolean, required: true },

@@ -1,11 +1,23 @@
 import express from 'express'
 import ProductModel from './schema.js'
-import { JWTAuthMiddleware } from '../../auth/token.js'
+import createHttpError from 'http-errors'
+import { adminOnlyMiddleware } from '../../auth/admin.js'
 
 const productsRouter = express.Router()
 
+//adminOnlyMiddleware,
+
 productsRouter.post('/', async (req, res, next) => {
+  console.log('Before try', req.body)
   try {
+    const newProduct = new ProductModel(req.body)
+    const { _id } = await newProduct.save()
+
+    res
+      .status(201)
+      .send(
+        `The new product ${newProduct.productName.toUpperCase()} was added with the ID: ${_id}`
+      )
   } catch (error) {
     next(error)
   }
