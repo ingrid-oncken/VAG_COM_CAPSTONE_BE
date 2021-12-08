@@ -6,12 +6,19 @@ const ProductSchema = new Schema(
   {
     productName: { type: String, required: true },
     description: { type: String, required: true },
+
     image: { type: String, required: false },
     language: {
       type: String,
       default: 'English',
       required: true,
       enum: ['English', 'Português', 'Italiano', 'Español', 'Deutsch'],
+    },
+    category: {
+      type: String,
+      default: 'VCDS®',
+      required: true,
+      enum: ['HEX-V2', 'HEX-NET', 'HEX-NET® Pro', 'Software'],
     },
     price: { type: Number, required: true },
     comments: [

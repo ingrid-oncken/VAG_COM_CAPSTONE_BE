@@ -1,6 +1,7 @@
 import express from 'express'
 import ProductModel from './schema.js'
 import createHttpError from 'http-errors'
+import q2m from 'query-to-mongo'
 import { adminOnlyMiddleware } from '../../auth/admin.js'
 
 const productsRouter = express.Router()
