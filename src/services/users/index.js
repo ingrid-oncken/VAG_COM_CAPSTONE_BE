@@ -1,5 +1,6 @@
 import express from 'express'
 import UserModel from './schema.js'
+import ProductModel from '../products/schema.js'
 import createHttpError from 'http-errors'
 import q2m from 'query-to-mongo'
 import { JWTAuthenticate } from '../../auth/tools.js'
@@ -23,6 +24,7 @@ usersRouter.post('/register', async (req, res, next) => {
     next(error)
   }
 })
+//
 usersRouter.get('/', JWTAuthMiddleware, async (req, res, next) => {
   try {
     const users = await UserModel.find()
@@ -70,44 +72,42 @@ usersRouter.delete('/me', JWTAuthMiddleware, async (req, res, next) => {
     next(error)
   }
 })
-
 // This rout will add new items to the purchased history
 // or add a new comment to that product
-usersRouter.post('/me/purchaseHistory'),
-  JWTAuthMiddleware,
-  async (req, res, next) => {
-    try {
-      //retriving the product id from req.user
-      const purchasedProduct = await User.findById(req.user.productId)
-      console.log('purchasedProduct ID', purchasedProduct)
+usersRouter.post('/me/purchaseHistory', async (req, res, next) => {
+  //console.log('req.body.productId', req.body.productId)
+  try {
+    //retriving the product id from req.user
+    const purchasedProduct = await ProductModel.findById(req.body.productId)
+    console.log('purchasedProduct ID', purchasedProduct)
 
-      if (purchasedProduct) {
-        const productToInsert = {
-          ...purchasedProduct.toObject(),
-          purchaseDate: new Date(),
-        }
-
-        //update take 3 parameters WHO, HOW and OPTIONS
-        //updating the user adding the product to its array
-        const updatedUser = await UserModel.findByIdAndUpdate(
-          req.user.userId, //who
-          //$push is the Mongo update operator to push a new item to the array
-          { $push: { purchaseHistory: productToInsert } }, //how
-          { new: true } //options
-        )
-        res.send(updatedUser)
-      } else {
-        next(
-          createError(
-            404,
-            `The product with id ${req.user.productId} was not found`
-          )
-        )
+    if (purchasedProduct) {
+      const productToInsert = {
+        ...purchasedProduct.toObject(),
+        purchaseDate: new Date(),
       }
-    } catch (error) {
-      next(error)
+
+      //update take 3 parameters WHO, HOW and OPTIONS
+      //updating the user adding the product to its array
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        req.body.userId, //who
+        //$push is the Mongo update operator to push a new item to the array
+        { $push: { purchaseHistory: productToInsert } }, //how
+        { new: true } //options
+      )
+      res.send(updatedUser)
+    } else {
+      next(
+        createError(
+          404,
+          `The product with id ${req.user.productId} was not found`
+        )
+      )
     }
+  } catch (error) {
+    next(error)
   }
+})
 
 //this route will display the whole purchased history of the logged user
 usersRouter.get('/me/purchaseHistory'),
@@ -115,7 +115,7 @@ usersRouter.get('/me/purchaseHistory'),
   async (req, res, next) => {
     try {
       const query = q2m(req.query)
-      console.log(query)
+      //console.log(query)
 
       const totalNumOrders = await UserModel.countDocuments(query.criteria)
 

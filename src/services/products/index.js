@@ -2,7 +2,7 @@ import express from 'express'
 import ProductModel from './schema.js'
 import createHttpError from 'http-errors'
 import q2m from 'query-to-mongo'
-import { adminOnlyMiddleware } from '../../auth/admin.js'
+//import { adminOnlyMiddleware } from '../../auth/admin.js'
 
 const productsRouter = express.Router()
 
@@ -19,38 +19,44 @@ productsRouter.post('/', async (req, res, next) => {
         `The new product ${newProduct.productName.toUpperCase()} was added with the ID: ${_id}`
       )
   } catch (error) {
+    // console.log(error)
     next(error)
   }
 })
 productsRouter.get('/', async (req, res, next) => {
   try {
-    const query = q2m(req.query)
+    const products = await ProductModel.find()
+    console.log(products)
 
-    console.log(query)
+    res.send(products)
 
-    //countDocuments() will return to the frontend the total of documents GET is getting, total of items
-    //That is important fro the pagination, and by passing the query.criteria I retrive the filtered total
-    const total = await ProductModel.countDocuments(query.criteria)
+    // const mongoQuery = q2m(req.query)
+    // console.log(mongoQuery)
 
-    //query.options.fields = PROJECTION
+    // //countDocuments() will return to the frontend the total of documents GET is getting, total of items
+    // //That is important fro the pagination, and by passing the query.criteria I retrive the filtered total
 
-    const products = await ProductModel.find(
-      query.criteria,
-      query.options.fields
-    )
-      .sort(query.options.sort)
-      .skip(query.options.skip)
-      .limit(query.options.limit)
+    // //query.options.fields = PROJECTION
 
-    //links: query.links('/products', total) is creating links for FE to use as prev/first/next/last in pagination
-    //pageTotal: Math.ceil(total / query.options.limit) is dividing the total of items for the stabilhed limit, also to be used by FE as info
-    res.send({
-      links: query.links('/products', total),
-      total,
-      products,
-      pageTotal: Math.ceil(total / query.options.limit),
-    })
+    // const total = await ProductModel.countDocuments(mongoQuery.criteria)
+    // const products = await ProductModel.find(
+    //   mongoQuery.criteria,
+    //   //mongoQuery.options.fields
+    // )
+    //   .sort(mongoQuery.options.sort)
+    //   .skip(mongoQuery.options.skip)
+    //   .limit(mongoQuery.options.limit)
+
+    // //links: query.links('/products', total) is creating links for FE to use as prev/first/next/last in pagination
+    // //pageTotal: Math.ceil(total / query.options.limit) is dividing the total of items for the stabilhed limit, also to be used by FE as info
+    // res.send({
+    //   links: mongoQuery.links('/products', total),
+    //   pageTotal: Math.ceil(total / mongoQuery.options.limit),
+    //   total,
+    //   products,
+    // })
   } catch (error) {
+    console.log(error)
     next(error)
   }
 })

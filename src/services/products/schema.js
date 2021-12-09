@@ -18,20 +18,20 @@ const ProductSchema = new Schema(
       type: String,
       default: 'VCDS®',
       required: true,
-      enum: ['HEX-V2', 'HEX-NET', 'HEX-NET® Pro', 'Software'],
+      enum: ['VCDS®', 'HEX-V2', 'HEX-NET', 'HEX-NET® Pro', 'Software'],
     },
     price: { type: Number, required: true },
-    comments: [
-      // {
-      //   commentAuthor: {
-      //     type: Schema.Types.ObjectId,
-      //     ref: 'Users',
-      //     required: true,
-      //   },
-      //   comment: { type: String, required: false },
-      //   rate: { type: Number, required: false },
-      // },
-    ],
+    // comments: [
+    //   // {
+    //   //   commentAuthor: {
+    //   //     type: Schema.Types.ObjectId,
+    //   //     ref: 'Users',
+    //   //     required: true,
+    //   //   },
+    //   //   comment: { type: String, required: false },
+    //   //   rate: { type: Number, required: false },
+    //   // },
+    // ],
     stock: { type: Number, required: false },
     available: { type: Boolean, required: true },
   },
