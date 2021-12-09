@@ -79,6 +79,7 @@ usersRouter.post('/me/purchaseHistory'),
     try {
       //retriving the product id from req.user
       const purchasedProduct = await User.findById(req.user.productId)
+      console.log('purchasedProduct ID', purchasedProduct)
 
       if (purchasedProduct) {
         const productToInsert = {
@@ -89,13 +90,12 @@ usersRouter.post('/me/purchaseHistory'),
         //update take 3 parameters WHO, HOW and OPTIONS
         //updating the user adding the product to its array
         const updatedUser = await UserModel.findByIdAndUpdate(
-          req.user.userId,
+          req.user.userId, //who
           //$push is the Mongo update operator to push a new item to the array
-          { $push: { purchaseHistory: productToInsert } },
-          { new: true }
+          { $push: { purchaseHistory: productToInsert } }, //how
+          { new: true } //options
         )
         res.send(updatedUser)
-
       } else {
         next(
           createError(
