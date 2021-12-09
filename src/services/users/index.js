@@ -1,7 +1,7 @@
 import express from 'express'
 import UserModel from './schema.js'
 import createHttpError from 'http-errors'
-
+import q2m from 'query-to-mongo'
 import { JWTAuthenticate } from '../../auth/tools.js'
 import { JWTAuthMiddleware } from '../../auth/token.js'
 // import { basicAuthMiddleware } from '../auth/basic.js'
@@ -70,6 +70,9 @@ usersRouter.delete('/me', JWTAuthMiddleware, async (req, res, next) => {
     next(error)
   }
 })
+
+// This rout will add new items to the purchased history
+// or add a new comment to that product
 usersRouter.post('/me/purchaseHistory'),
   JWTAuthMiddleware,
   async (req, res, next) => {
@@ -87,20 +90,12 @@ usersRouter.post('/me/purchaseHistory'),
         //updating the user adding the product to its array
         const updatedUser = await UserModel.findByIdAndUpdate(
           req.user.userId,
+          //$push is the Mongo update operator to push a new item to the array
           { $push: { purchaseHistory: productToInsert } },
           { new: true }
         )
-          res.send(updatedUser)
-          
-        // updatedUser
-        //   ? res.send(updatedUser)
-        //   : //Does it make sense? if the user is already logged?
-        //     next(
-        //       createError(
-        //         404,
-        //         `***This is actually an error that I don't know if it will ever happen *** The user with id ${req.user.userId} was not found`
-        //       )
-        //     )
+        res.send(updatedUser)
+
       } else {
         next(
           createError(
@@ -113,30 +108,49 @@ usersRouter.post('/me/purchaseHistory'),
       next(error)
     }
   }
+
+//this route will display the whole purchased history of the logged user
 usersRouter.get('/me/purchaseHistory'),
   JWTAuthMiddleware,
   async (req, res, next) => {
     try {
+      const query = q2m(req.query)
+      console.log(query)
+
+      const totalNumOrders = await UserModel.countDocuments(query.criteria)
+
+      const orders = await UserModel.find(query.criteria, query.options.fields)
+        .sort(query.options.sort)
+        .skip(query.options.skip)
+        .limit(query.options.limit)
+
+      res.send({ totalNumOrders, orders })
     } catch (error) {
       next(error)
     }
   }
-usersRouter.get('/me/purchaseHistory/:productId'),
-  JWTAuthMiddleware,
-  async (req, res, next) => {
-    try {
-    } catch (error) {
-      next(error)
-    }
-  }
-usersRouter.put('/me/purchaseHistory/:productId'),
-  JWTAuthMiddleware,
-  async (req, res, next) => {
-    try {
-    } catch (error) {
-      next(error)
-    }
-  }
+
+// displays one single item from the purchased history
+// usersRouter.get('/me/purchaseHistory/:productId'),
+//   JWTAuthMiddleware,
+//   async (req, res, next) => {
+//     try {
+//     } catch (error) {
+//       next(error)
+//     }
+//   }
+
+// modifies one specific item from purchased history,
+// for exemple modifying one comment about that product
+// usersRouter.put('/me/purchaseHistory/:productId'),
+//   JWTAuthMiddleware,
+//   async (req, res, next) => {
+//     try {
+//     } catch (error) {
+//       next(error)
+//     }
+//   }
+
 usersRouter.delete('/me/purchaseHistory/:productId'),
   JWTAuthMiddleware,
   async (req, res, next) => {
