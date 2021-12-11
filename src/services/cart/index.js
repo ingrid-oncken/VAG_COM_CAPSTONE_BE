@@ -28,6 +28,16 @@ cartsRoutes.post('/me/addProduct', async (req, res, next) => {
           ...purchasedProduct.toObject(),
           quantity: req.body.quantity,
         }
+
+        //upsert is a mongo property that create the cart is it does not exist yet
+        const updatedCart = await CartModel.findOneAndUpdate(
+          { ownerId: req.params.ownerId, status: 'active' },
+          {
+            $push: { products: productToInsert },
+          },
+          { runValidators: true, upsert: true, new: true }
+        )
+        res.send(updatedCart)
       }
     } else {
       next(

@@ -1,10 +1,10 @@
-import mongoose, { SchemaTypes } from 'mongoose'
+import mongoose from 'mongoose'
 
 const { Schema, model } = mongoose
 
 const cartSchema = new Schema(
   {
-    ownerId: { type: SchemaTypes.ObjectId, ref: 'User' },
+    ownerId: { type: SchemaTypes.ObjectId, ref: 'User', required: true },
     products: [
       {
         productName: String,
