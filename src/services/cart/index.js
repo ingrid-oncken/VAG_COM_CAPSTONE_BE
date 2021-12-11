@@ -52,4 +52,4 @@ cartsRouter.post('/me/addProduct', async (req, res, next) => {
   }
 })
 
-export default cartsRoutes
+export default cartsRouter
