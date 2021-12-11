@@ -79,7 +79,7 @@ usersRouter.post('/me/purchaseHistory', async (req, res, next) => {
   try {
     //retriving the product id from req.user
     const purchasedProduct = await ProductModel.findById(req.body.productId)
-    console.log('purchasedProduct ID', purchasedProduct)
+    //console.log('purchasedProduct ID', purchasedProduct)
 
     if (purchasedProduct) {
       const productToInsert = {

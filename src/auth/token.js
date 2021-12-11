@@ -15,7 +15,7 @@ export const JWTAuthMiddleware = async (req, res, next) => {
 
       //this clg will return basically the payload
       //Ex: Decoded TOKEN:  { _id: '61a0bc6e27ea5ebeefb699fd', iat: 1638105603, exp: 1641734403 }
-      console.log('Decoded TOKEN: ', decodedToken)
+      //console.log('Decoded TOKEN: ', decodedToken)
 
       //bringing the user from the DB, he will be findede by the id number present in the token
       const user = await UserModel.findById(decodedToken._id)
