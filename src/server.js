@@ -5,7 +5,7 @@ import listEndpoints from 'express-list-endpoints'
 
 import usersRouter from './services/users/index.js'
 import productsRouter from './services/products/index.js'
-import cartsRoutes from './services/cart/index.js'
+import cartsRouter from './services/cart/index.js'
 
 import {
   unauthorizedHandler,

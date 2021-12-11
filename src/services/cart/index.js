@@ -1,11 +1,11 @@
-import exress from 'express'
+import express from 'express'
 import createHttpError from 'http-errors'
 import ProductModel from '../products/schema.js'
 import CartModel from './schema.js'
 
-const cartsRoutes = express.Router()
+const cartsRouter = express.Router()
 
-cartsRoutes.post('/me/addProduct', async (req, res, next) => {
+cartsRouter.post('/me/addProduct', async (req, res, next) => {
   try {
     //retrive the product
     const productId = req.body.productId
