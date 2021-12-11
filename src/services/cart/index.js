@@ -1,6 +1,7 @@
 import express from 'express'
 import createHttpError from 'http-errors'
 import ProductModel from '../products/schema.js'
+import UserModel from '../users/schema.js'
 import CartModel from './schema.js'
 import { JWTAuthMiddleware } from '../../auth/token.js'
 const cartsRouter = express.Router()
@@ -14,7 +15,15 @@ cartsRouter.post(
       const productId = req.body.productId
       console.log('THIS IS productId cart/index.js', productId)
 
+      const userId = req.body.userId
+      console.log('THIS IS usertId cart/index.js', userId)
+
       const purchasedProduct = await ProductModel.findById(productId)
+
+      console.log(
+        'THIS IS req.params.ownerId on cart/index.js',
+        req.params.ownerId
+      )
 
       if (purchasedProduct) {
         //looking for the product using the ownerId AND the status
@@ -25,6 +34,20 @@ cartsRouter.post(
         })
 
         if (isProductThere) {
+          //if the product is already in the cart, only need to increase the quantity
+          const updatedCart = await CartModel.findOneAndUpdate(
+            {
+              ownerId: req.params.ownerId,
+              status: 'active',
+              'products.productName': purchasedProduct.productName,
+            },
+            {
+              $inc: {
+                'product.$.quantity': req.body.quantity,
+              },
+            }
+          )
+          res.send(updatedCart)
         } else {
           //so, if the product is not in the cart, let's add it
           const productToInsert = {
