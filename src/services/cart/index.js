@@ -73,14 +73,17 @@ cartsRouter.post(
 
     try {
       const { productId, quantity } = req.body
+      //console.log({ productId, quantity })
 
       const purchasedProduct = await ProductModel.findById(productId)
+      //console.log(purchasedProduct)
 
       if (purchasedProduct) {
         const isProductThere = await CartModel.findOne({
           ownerId: req.params.ownerId,
           status: 'active',
         })
+        console.log(isProductThere.ownerId) //THIS IS RETURNING NULL
         if (isProductThere) {
           const cart = await CartModel.findOneAndUpdate(
             { ownerId: req.params.ownerId, status: 'active' },
