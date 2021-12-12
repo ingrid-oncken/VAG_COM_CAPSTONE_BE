@@ -15,15 +15,10 @@ cartsRouter.post(
       const productId = req.body.productId
       console.log('THIS IS productId cart/index.js', productId)
 
-      const userId = req.body.userId
-      console.log('THIS IS usertId cart/index.js', userId)
-
       const purchasedProduct = await ProductModel.findById(productId)
 
-      console.log(
-        'THIS IS req.params.ownerId on cart/index.js',
-        req.params.ownerId
-      )
+      const x = req.params.ownerId
+      console.log('THIS IS req.params.ownerId on cart/index.js', x)
 
       if (purchasedProduct) {
         //looking for the product using the ownerId AND the status
